@@ -8,7 +8,7 @@ class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
     phone_number = db.Column(db.Integer,
-                            db.CheckConstraint('len(phone_number) = 10'),
+                            db.CheckConstraint('LENGTH(phone_number) = 10'),
                             nullable=False)
 
     def __repr__(self):
@@ -20,16 +20,22 @@ class Author(db.Model):
             raise ValueError("You must enter a name.")
         return name
 
+    @validates('phone_number')
+    def validates_phone_number_length(self, key, phone_number):
+        if len(phone_number) != 10:
+            raise ValueError("Phone number must be 10 digits.")
+        return phone_number
+
 class Post(db.Model):
     __tablename__ = "posts"
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
     content = db.Column(db.String,
-                        db.CheckConstraint('len(content) >= 250'),
+                        db.CheckConstraint('LENGTH(content) >= 250'),
                         nullable=False)
     summary = db.Column(db.String,
-                        db.CheckConstraint('len(summary) < 250'),
+                        db.CheckConstraint('LENGTH(summary) < 250'),
                         nullable=False)
     category = db.Column(db.String)
 
